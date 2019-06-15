@@ -63,10 +63,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 handler1.post(new Runnable() {
                     @Override
                     public void run() {
-                         //マーカーを立てる(デバッグ用)
+                        if (mLocation != null) {
+
+                            // 座標コピー[1] -> [2]
+                            if (mLocations[1] != null) {
+                                if (mLocations[2] == null) {
+                                    mLocations[2] = new Location(mLocations[1]);
+                                } else {
+                                    mLocations[2].setLatitude(mLocations[1].getLatitude());
+                                    mLocations[2].setLongitude(mLocations[1].getLongitude());
+                                }
+                            }
+
+
+                            // 座標コピー[0] -> [1]
+                            if (mLocations[0] != null) {
+                                if (mLocations[1] == null) {
+                                    mLocations[1] = new Location(mLocations[0]);
+                                } else {
+                                    mLocations[1].setLatitude(mLocations[0].getLatitude());
+                                    mLocations[1].setLongitude(mLocations[0].getLongitude());
+                                }
+                            }
+
+                            // 座標作成[0]
+                            mLocations[0] = new Location(mLocation);
+                        }
+
+
+                        //マーカーを立てる(デバッグ用)
                         if (mLocations[0] != null) {
-                             mMap.addMarker(new MarkerOptions().position(new LatLng(mLocations[0].getLatitude(), mLocations[0].getLongitude())));
-                         }
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(mLocations[0].getLatitude(), mLocations[0].getLongitude())));
+                        }
 
                         // 三角形を作る
                         if (mLocations[0] != null && mLocations[1] != null && mLocations[2] != null) {
@@ -83,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
             }
-        }, 1000, 1000);
+        }, 1000, 3000);
     }
 
     @Override
@@ -92,28 +120,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        // 座標コピー[1] -> [2]
-        if (mLocations[1] != null) {
-            if (mLocations[2] == null) {
-                mLocations[2] = new Location(mLocations[1]);
-            } else {
-                mLocations[2].setLatitude(mLocations[1].getLatitude());
-                mLocations[2].setLongitude(mLocations[1].getLongitude());
-            }
-        }
 
-        // 座標コピー[0] -> [1]
-        if (mLocations[0] != null) {
-            if (mLocations[1] == null) {
-                mLocations[1] = new Location(mLocations[0]);
-            } else {
-                mLocations[1].setLatitude(mLocations[0].getLatitude());
-                mLocations[1].setLongitude(mLocations[0].getLongitude());
-            }
-        }
+        mLocation= new Location(location);
 
-        // 座標作成[0]
-        mLocations[0] = new Location(location);
     }
 
     @Override
